@@ -5,6 +5,7 @@ from aws_cdk.aws_cloudfront import *
 from aws_cdk.aws_cloudfront_origins import HttpOrigin
 from aws_cdk.aws_ssm import StringParameter
 from aws_cdk.core import Stack, IResolvable
+from b_cfn_custom_api_key_authorizer.custom_authorizer import ApiKeyCustomAuthorizer
 from b_cfn_custom_userpool_authorizer.config.user_pool_config import UserPoolConfig
 from b_cfn_custom_userpool_authorizer.config.user_pool_ssm_config import UserPoolSsmConfig
 from b_cfn_custom_userpool_authorizer.user_pool_custom_authorizer import UserPoolCustomAuthorizer
@@ -60,22 +61,60 @@ class Api(CfnApi):
             **kwargs
         )
 
+        # Deprecated.
         self.authorizer: Optional[UserPoolCustomAuthorizer] = None
+        # Authorizers.
+        self.user_pool_authorizer: Optional[UserPoolCustomAuthorizer] = None
+        self.api_key_authorizer: Optional[ApiKeyCustomAuthorizer] = None
+
         self.default_stage: Optional[CfnStage] = None
         self.cdn: Optional[Distribution] = None
 
+    """
+    Authorizers.
+    """
+
+    # Deprecated. Do not use this function.
     def enable_authorizer(
             self,
             user_pool_config_for_auth: Union[UserPoolConfig, UserPoolSsmConfig],
             **kwargs
     ) -> None:
-        self.authorizer = UserPoolCustomAuthorizer(
+        self.enable_user_pool_authorizer(user_pool_config_for_auth, **kwargs)
+
+    def enable_user_pool_authorizer(
+            self,
+            user_pool_config_for_auth: Union[UserPoolConfig, UserPoolSsmConfig],
+            **kwargs
+    ) -> UserPoolCustomAuthorizer:
+        authorizer = UserPoolCustomAuthorizer(
             scope=self.__scope,
             name=f'{self.__name}Authorizer',
             api=self,
             user_pool_config=user_pool_config_for_auth,
             **kwargs
         )
+
+        self.authorizer = authorizer
+        self.user_pool_authorizer = authorizer
+
+        return authorizer
+
+    def enable_api_key_authorizer(self, **kwargs) -> ApiKeyCustomAuthorizer:
+        authorizer = ApiKeyCustomAuthorizer(
+            scope=self.__scope,
+            name=f'{self.__name}ApiKeyAuthorizer',
+            api=self,
+            **kwargs
+        )
+
+        self.api_key_authorizer = authorizer
+
+        return authorizer
+
+    """
+    Other.
+    """
 
     def enable_default_stage(self, stage_name: str, **kwargs) -> None:
         self.default_stage = CfnStage(

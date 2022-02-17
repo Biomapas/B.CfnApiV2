@@ -7,19 +7,19 @@ from b_cfn_lambda_integration.lambda_integration import LambdaIntegration
 from b_cfn_api_v2.api import Api
 
 
-class AuthorizedEndpointStack(Stack):
+class AuthorizedEndpointUserPoolStack(Stack):
     def __init__(self, scope: Stack, api: Api):
         super().__init__(
             scope=scope,
-            id='AuthorizedEndpointStack'
+            id='UserPoolAuthorizedEndpointStack'
         )
 
         prefix = TestingStack.global_prefix()
 
         self.api_endpoint_function = Function(
             scope=self,
-            id='ApiFunction',
-            function_name=f'{prefix}ApiFunction',
+            id='ApiFunction1',
+            function_name=f'{prefix}ApiFunction1',
             code=Code.from_inline(
                 'def handler(event, context):\n'
                 '    print(event)\n'
@@ -47,7 +47,7 @@ class AuthorizedEndpointStack(Stack):
         self.integration = LambdaIntegration(
             scope=self,
             api=api,
-            integration_name=f'{prefix}Integration',
+            integration_name=f'{prefix}Integration1',
             lambda_function=self.api_endpoint_function
         )
 
@@ -55,7 +55,7 @@ class AuthorizedEndpointStack(Stack):
             scope=self,
             id='DummyRoute',
             api_id=api.ref,
-            route_key=f'GET /dummy',
+            route_key=f'GET /dummy1',
             authorization_type='CUSTOM',
             target=f'integrations/{self.integration.ref}',
             authorizer_id=api.authorizer.ref
