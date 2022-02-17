@@ -12,7 +12,7 @@ that you can easily swap `CfnApi` and this `Api` resource with no major impact. 
 want to switch a traditional `CfnApi` to this one. Mainly these convenient features:
 - Easy to add `CloudFront` distribution on top of the API (enabling CDN).
 - Easy to enable `Stage` and attached to the api.
-- Easy to add authorization with `UserPoolAuthorizer`.
+- Easy to add authorization with `UserPoolAuthorizer` & `ApiKeyAuthorizer`.
 
 ### Remarks
 
@@ -45,6 +45,8 @@ This project assumes you know what Lambda functions are and how code is being sh
 - AWS API Gateway:<br>https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html
 - AWS API Gateway V2:<br>https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigatewayv2-api.html
 - Custom User Pool Authorizer:<br>https://github.com/Biomapas/B.CfnCustomUserPoolAuthorizer
+- Custom api key authorizer:<br>https://github.com/Biomapas/B.CfnCustomApiKeyAuthorizer
+- Custom user pool authorizer:<br>https://github.com/Biomapas/B.CfnCustomUserPoolAuthorizer
 
 ### Install
 
@@ -134,11 +136,22 @@ from b_cfn_api_v2.api import Api
 from b_cfn_custom_userpool_authorizer.config.user_pool_config import UserPoolConfig
 
 api = Api(...)
-api.enable_authorizer(UserPoolConfig(
+
+# Your authorized endpoint will require `Authorization`
+# supplied in headers.
+# Read more:
+# https://github.com/Biomapas/B.CfnCustomUserPoolAuthorizer
+api.enable_user_pool_authorizer(UserPoolConfig(
     user_pool_id='id',
     user_pool_region='region',
     user_pool_client_id='client'
 ))
+
+# Your authorized endpoint will require `ApiKey` and `ApiSecret`
+# supplied in headers.
+# Read more:
+# https://github.com/Biomapas/B.CfnCustomApiKeyAuthorizer
+api.enable_api_key_authorizer()
 ```
 
 - **Easy to enable CDN.**

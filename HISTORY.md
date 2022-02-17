@@ -1,5 +1,8 @@
 # Release history
 
+### 1.1.1
+* Update readme.
+
 ### 1.1.0
 * Implement api keys custom authorizer (https://github.com/Biomapas/B.CfnCustomApiKeyAuthorizer).
 
