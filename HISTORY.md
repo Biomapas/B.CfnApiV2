@@ -1,5 +1,9 @@
 # Release history
 
+### 2.0.0
+* Use the newest `2.0.0` custom api keys authorizer which now hashes 
+api secrets and is no longer compatible with previous versions. 
+
 ### 1.1.1
 * Update readme.
 

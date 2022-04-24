@@ -103,7 +103,7 @@ class Api(CfnApi):
     def enable_api_key_authorizer(self, **kwargs) -> ApiKeyCustomAuthorizer:
         authorizer = ApiKeyCustomAuthorizer(
             scope=self.__scope,
-            name=f'{self.__name}ApiKeyAuthorizer',
+            resource_name_prefix=f'{self.__name}ApiKeyAuthorizer',
             api=self,
             **kwargs
         )

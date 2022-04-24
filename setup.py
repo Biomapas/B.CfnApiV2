@@ -28,7 +28,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'b_cfn_custom_userpool_authorizer>=0.1.1,<1.0.0',
-        'b_cfn_custom_api_key_authorizer>=1.1.0,<2.0.0',
+        'b_cfn_custom_api_key_authorizer>=2.0.0,<3.0.0',
 
         'aws_cdk.aws_apigatewayv2>=1.90.0,<1.145.0',
         'aws_cdk.aws_lambda>=1.90.0,<1.145.0',
