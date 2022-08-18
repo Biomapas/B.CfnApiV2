@@ -1,5 +1,8 @@
 # Release history
 
+### 2.0.1
+* Make dependencies range more loose with maximum version not reaching `2.0.0`.
+
 ### 2.0.0
 * Use the newest `2.0.0` custom api keys authorizer which now hashes 
 api secrets and is no longer compatible with previous versions. 
