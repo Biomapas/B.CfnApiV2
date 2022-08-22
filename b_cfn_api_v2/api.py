@@ -4,7 +4,9 @@ from aws_cdk.aws_apigatewayv2 import CfnApi, CfnStage
 from aws_cdk.aws_cloudfront import *
 from aws_cdk.aws_cloudfront_origins import HttpOrigin
 from aws_cdk.aws_ssm import StringParameter
-from aws_cdk.core import Stack, IResolvable
+from aws_cdk.core import Stack, IResolvable, RemovalPolicy
+from aws_cdk.aws_logs import LogGroup, RetentionDays
+from aws_cdk.aws_iam import ServicePrincipal
 from b_cfn_custom_api_key_authorizer.custom_authorizer import ApiKeyCustomAuthorizer
 from b_cfn_custom_userpool_authorizer.config.user_pool_config import UserPoolConfig
 from b_cfn_custom_userpool_authorizer.config.user_pool_ssm_config import UserPoolSsmConfig
@@ -117,12 +119,25 @@ class Api(CfnApi):
     """
 
     def enable_default_stage(self, stage_name: str, **kwargs) -> None:
+        loggroup = LogGroup(
+            scope=self.__scope,
+            id=f'{self.__name}Stage-Loggroup',
+            retention=RetentionDays.ONE_MONTH,
+            log_group_name=f'{self.__name}-Stage-Loggroup',
+            removal_policy=RemovalPolicy.DESTROY,
+        )
+        loggroup.grant_write(ServicePrincipal('apigateway.amazonaws.com'))
+
         self.default_stage = CfnStage(
             scope=self.__scope,
             id=f'{self.__name}Stage',
             api_id=self.ref,
             stage_name=stage_name,
             auto_deploy=True,
+            access_log_settings=CfnStage.AccessLogSettingsProperty(
+                destination_arn=loggroup.log_group_arn,
+                format='{ "requestId":"$context.requestId", "ip": "$context.identity.sourceIp", "requestTime":"$context.requestTime", "httpMethod":"$context.httpMethod","routeKey":"$context.routeKey", "status":"$context.status","protocol":"$context.protocol", "responseLength":"$context.responseLength" }'
+            ),
             **kwargs
         )
 
