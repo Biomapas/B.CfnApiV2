@@ -1,10 +1,13 @@
+import json
 from typing import Optional, Any, Union, Dict
 
 from aws_cdk.aws_apigatewayv2 import CfnApi, CfnStage
 from aws_cdk.aws_cloudfront import *
 from aws_cdk.aws_cloudfront_origins import HttpOrigin
+from aws_cdk.aws_iam import ServicePrincipal
+from aws_cdk.aws_logs import LogGroup, RetentionDays
 from aws_cdk.aws_ssm import StringParameter
-from aws_cdk.core import Stack, IResolvable
+from aws_cdk.core import Stack, IResolvable, RemovalPolicy
 from b_cfn_custom_api_key_authorizer.custom_authorizer import ApiKeyCustomAuthorizer
 from b_cfn_custom_userpool_authorizer.config.user_pool_config import UserPoolConfig
 from b_cfn_custom_userpool_authorizer.config.user_pool_ssm_config import UserPoolSsmConfig
@@ -116,7 +119,44 @@ class Api(CfnApi):
     Other.
     """
 
-    def enable_default_stage(self, stage_name: str, **kwargs) -> None:
+    def enable_default_stage(self, stage_name: str, enable_logging: bool = False, **kwargs) -> None:
+        """
+        Creates a stage resource for this API. A stage could represent a version (V1, V2, V3...)
+        or an environment (DEV, STAGE, PROD...) or anything else actually...
+
+        :param stage_name: The name of the stage e.g. "V1", "PROD", etc.
+        :param enable_logging: A flag that (if set to True) enables API logging by creating a logging
+            group and attaching it to the stage. WARNING! If this flag is set to True, the named
+            argument "access_log_settings" in kwargs will be overridden.
+        :param kwargs: Other named arguments for maximum flexibility.
+
+        :return: No return.
+        """
+        if enable_logging:
+            log_group = LogGroup(
+                scope=self.__scope,
+                id=f'{self.__name}{stage_name}StageLogGroup',
+                retention=RetentionDays.ONE_MONTH,
+                log_group_name=f'{self.__name}-{stage_name}-Stage-LogGroup',
+                removal_policy=RemovalPolicy.DESTROY,
+            )
+
+            log_group.grant_write(ServicePrincipal('apigateway.amazonaws.com'))
+
+            kwargs['access_log_settings'] = CfnStage.AccessLogSettingsProperty(
+                destination_arn=log_group.log_group_arn,
+                format=json.dumps({
+                    'requestId': '$context.requestId',
+                    'ip': '$context.identity.sourceIp',
+                    'requestTime': '$context.requestTime',
+                    'httpMethod': '$context.httpMethod',
+                    'routeKey': '$context.routeKey',
+                    'status': '$context.status',
+                    'protocol': '$context.protocol',
+                    'responseLength': '$context.responseLength'
+                })
+            )
+
         self.default_stage = CfnStage(
             scope=self.__scope,
             id=f'{self.__name}Stage',

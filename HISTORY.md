@@ -1,5 +1,8 @@
 # Release history
 
+### 3.1.0
+* Enable easy stage logging.
+
 ### 3.0.0
 * Upgrade breaking dependencies.
 

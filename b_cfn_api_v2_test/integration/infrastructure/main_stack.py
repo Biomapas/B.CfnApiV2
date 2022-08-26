@@ -48,7 +48,7 @@ class MainStack(TestingStack):
             user_pool_region_ssm_key=self.user_pool_stack.ssm_pool_region.parameter_name,
         ), cache_ttl=0)
 
-        self.api.enable_default_stage('test')
+        self.api.enable_default_stage('test', enable_logging=True)
 
         AuthorizedEndpointApiKeyStack(self, self.api)
         AuthorizedEndpointUserPoolStack(self, self.api)
