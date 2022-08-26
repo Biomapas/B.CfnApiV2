@@ -137,7 +137,11 @@ class Api(CfnApi):
                 scope=self.__scope,
                 id=f'{self.__name}{stage_name}StageLogGroup',
                 retention=RetentionDays.ONE_MONTH,
-                log_group_name=f'{self.__name}-{stage_name}-Stage-LogGroup',
+                # At some point in time you will get this weird error:
+                # Cannot enable logging. Policy document length breaking Cloudwatch Logs Constraints,
+                # either < 1 or > 5120 (Service: AmazonApiGatewayV2; ...), hence we need to
+                # prefix the name with "/aws/vendedlogs/".
+                log_group_name=f'/aws/vendedlogs/{self.__name}-{stage_name}-Stage-LogGroup',
                 removal_policy=RemovalPolicy.DESTROY,
             )
 
