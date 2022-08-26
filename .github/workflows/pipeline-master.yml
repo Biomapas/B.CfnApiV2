@@ -16,9 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14'
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
       - name: Install
         run: |
           npm install -g aws-cdk@1.x
+          pip install -r b_cfn_api_v2_test/requirements.txt
           pip install . --upgrade
 
           pip list

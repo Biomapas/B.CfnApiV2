@@ -1,5 +1,8 @@
 # Release history
 
+### 3.0.0
+* Upgrade breaking dependencies.
+
 ### 2.0.1
 * Make dependencies range more loose with maximum version not reaching `2.0.0`.
 
