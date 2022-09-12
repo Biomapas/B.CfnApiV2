@@ -1,5 +1,10 @@
 # Release history
 
+### 4.0.0
+* Fix origin paths between pure api or its cloudfront distribution.
+  Both should require stage name to be entered as a part of a URL.
+  This is a breaking change.
+
 ### 3.1.0
 * Enable easy stage logging.
 

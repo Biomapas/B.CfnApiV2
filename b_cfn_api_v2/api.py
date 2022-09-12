@@ -196,7 +196,7 @@ class Api(CfnApi):
                 viewer_protocol_policy=ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 origin=HttpOrigin(
                     domain_name=self.api_domain_name,
-                    origin_path=self.api_origin_path
+                    origin_path='/'
                 )
             ),
             additional_behaviors=additional_behaviors,
@@ -214,7 +214,7 @@ class Api(CfnApi):
         """
         # In case CDN is enabled - return CDN URL.
         if self.cdn:
-            return f'https://{self.cdn.domain_name}'
+            return f'https://{self.cdn.domain_name}{self.api_origin_path}'
         # In case CDN is not enabled - return API URL.
         else:
             return f'https://{self.api_domain_name}{self.api_origin_path}'
