@@ -1,5 +1,11 @@
 # Release history
 
+### 5.0.0
+* Upgrade CDK support from v1 to v2.
+* Upgrade GitHub pipelines checkout version from v2 to v3.
+* Set GitHub pipelines node version 18.
+* Set GitHub pipelines python version 3.10.
+
 ### 4.0.0
 * Fix origin paths between pure api or its cloudfront distribution.
   Both should require stage name to be entered as a part of a URL.

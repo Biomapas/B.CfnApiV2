@@ -1,13 +1,13 @@
 import json
 from typing import Optional, Any, Union, Dict
 
+from aws_cdk import Stack, IResolvable, RemovalPolicy
 from aws_cdk.aws_apigatewayv2 import CfnApi, CfnStage
 from aws_cdk.aws_cloudfront import *
 from aws_cdk.aws_cloudfront_origins import HttpOrigin
 from aws_cdk.aws_iam import ServicePrincipal
 from aws_cdk.aws_logs import LogGroup, RetentionDays
 from aws_cdk.aws_ssm import StringParameter
-from aws_cdk.core import Stack, IResolvable, RemovalPolicy
 from b_cfn_custom_api_key_authorizer.custom_authorizer import ApiKeyCustomAuthorizer
 from b_cfn_custom_userpool_authorizer.config.user_pool_config import UserPoolConfig
 from b_cfn_custom_userpool_authorizer.config.user_pool_ssm_config import UserPoolSsmConfig
