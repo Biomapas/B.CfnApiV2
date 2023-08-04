@@ -1,6 +1,7 @@
 from b_aws_testing_framework.credentials import Credentials
-from b_cfn_api_v2_test.integration.infrastructure.main_stack import MainStack
 from pytest import fixture
+
+from b_cfn_api_v2_test.integration.infrastructure.main_stack import MainStack
 
 
 @fixture(scope='function')
